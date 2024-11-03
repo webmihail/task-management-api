@@ -17,7 +17,8 @@
       "@errors/*": ["errors/*"],
       "@helpers/*": ["helpers/*"],
       "@middlewares/*": ["middlewares/*"],
-      "@modules/*": ["modules/*"]
+      "@modules/*": ["modules/*"],
+      "@dtos/*": ["dtos/*"]
     }
   },
   "include": ["src/**/*.ts"],

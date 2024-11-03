@@ -7,8 +7,6 @@ import { IRegister } from "./interfaces/register.interface";
 import { ILogin } from "./interfaces/login.interface";
 import { User } from "@database/models/user";
 
-require("dotenv").config();
-
 export class AuthService {
   async login(data: ILogin) {
     const { email, password } = data || {};
@@ -41,8 +39,6 @@ export class AuthService {
         password,
       },
     });
-
-    console.log("dd", { id: user.id, email: user.email });
 
     if (!created) throw HttpError.badRequest("User already exists");
 

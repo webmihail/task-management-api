@@ -16,7 +16,7 @@ router.post(
   tasksController.createTask.bind(tasksController),
 );
 
-router.get("/", authMiddleware, tasksController.getTasks.bind(tasksController));
+router.get("/", tasksController.getTasks.bind(tasksController));
 
 router.get("/:id", tasksController.getTask.bind(tasksController));
 

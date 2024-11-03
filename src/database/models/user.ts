@@ -2,8 +2,6 @@ import { Model, DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 import sequelize from "../dbConnection";
 
-require("dotenv").config();
-
 export class User extends Model {
   public id: string;
   public email: string;

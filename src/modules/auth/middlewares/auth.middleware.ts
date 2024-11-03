@@ -1,13 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { HttpError } from "@errors/errors";
-import { User } from "@database/models/user";
 import { ITokenData } from "../interfaces/token-data.interface";
+import { ExtendedRequest } from "@modules/auth/interfaces/extended-reauest.interface";
 
-require("dotenv").config();
-
-const handleAuthValidation = (checkedData?: string) => {
-  if (!checkedData) throw HttpError.unauthorized();
+const handleBadRequest = () => {
+  throw HttpError.badRequest("Token invalid");
 };
 
 const authMiddleware = async (
@@ -17,14 +15,14 @@ const authMiddleware = async (
 ) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    handleAuthValidation(token);
+    if (!token) handleBadRequest();
 
-    const decoded = jwt.verify(token!, process.env.JWT_SECRET!);
-    const { id } = decoded as ITokenData;
-    const user = await User.findOne({ where: { id } });
-    handleAuthValidation(user!.id);
+    jwt.verify(token!, process.env.JWT_SECRET!, (err, verifiedUser) => {
+      if (err) handleBadRequest();
+      (req as ExtendedRequest).user = verifiedUser as ITokenData;
 
-    next();
+      next();
+    });
   } catch (error) {
     next(error);
   }
