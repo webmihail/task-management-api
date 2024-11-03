@@ -6,19 +6,23 @@ import { ITokenData } from "../interfaces/token-data.interface";
 
 require("dotenv").config();
 
+const handleAuthValidation = (checkedData?: string) => {
+  if (!checkedData) throw HttpError.unauthorized();
+};
+
 const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) throw HttpError.unauthorized();
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    const token = req.headers.authorization?.split(" ")[1];
+    handleAuthValidation(token);
+
+    const decoded = jwt.verify(token!, process.env.JWT_SECRET!);
     const { id } = decoded as ITokenData;
     const user = await User.findOne({ where: { id } });
-    if (!user) next(HttpError.unauthorized());
+    handleAuthValidation(user!.id);
 
     next();
   } catch (error) {
